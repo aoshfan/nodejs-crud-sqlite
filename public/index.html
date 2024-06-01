@@ -1,0 +1,86 @@
+<!-- public/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Node.js SQLite CRUD</title>
+</head>
+<body>
+  <h1>Node.js SQLite CRUD</h1>
+  <div>
+    <h2>Create User</h2>
+    <input type="text" id="name" placeholder="Name">
+    <input type="text" id="email" placeholder="Email">
+    <button onclick="createUser()">Create</button>
+  </div>
+  <div>
+    <h2>Users</h2>
+    <button onclick="getUsers()">Get Users</button>
+    <ul id="userList"></ul>
+  </div>
+  <div>
+    <h2>Update User</h2>
+    <input type="text" id="updateId" placeholder="User ID">
+    <input type="text" id="updateName" placeholder="New Name">
+    <input type="text" id="updateEmail" placeholder="New Email">
+    <button onclick="updateUser()">Update</button>
+  </div>
+  <div>
+    <h2>Delete User</h2>
+    <input type="text" id="deleteId" placeholder="User ID">
+    <button onclick="deleteUser()">Delete</button>
+  </div>
+  <script>
+    async function createUser() {
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+      const response = await fetch('/users', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name, email }),
+      });
+      const data = await response.json();
+      console.log(data);
+    }
+
+    async function getUsers() {
+      const response = await fetch('/users');
+      const data = await response.json();
+      const userList = document.getElementById('userList');
+      userList.innerHTML = '';
+      data.users.forEach(user => {
+        const li = document.createElement('li');
+        li.textContent = `${user.id}: ${user.name} (${user.email})`;
+        userList.appendChild(li);
+      });
+    }
+
+    async function updateUser() {
+      const id = document.getElementById('updateId').value;
+      const name = document.getElementById('updateName').value;
+      const email = document.getElementById('updateEmail').value;
+      const response = await fetch(`/users/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name, email }),
+      });
+      const data = await response.json();
+      console.log(data);
+    }
+
+    async function deleteUser() {
+      const id = document.getElementById('deleteId').value;
+      const response = await fetch(`/users/${id}`, {
+        method: 'DELETE',
+      });
+      const data = await response.json();
+      console.log(data);
+    }
+  </script>
+</body>
+</html>

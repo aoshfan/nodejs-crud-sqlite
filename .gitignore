@@ -1,0 +1,8 @@
+# database data
+database-data/database.db
+
+# Dependency directories
+node_modules/
+
+# Optional npm cache directory
+.npm
